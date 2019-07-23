@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.orderDao"><!-- namespace:映射文件的路径 -->
+
+<resultMap id="DangDangOrder" type="com.entity.DangDangOrder">
+</resultMap>  
+<resultMap id="DangDangOrderDetail" type="com.entity.DangDangOrderDetail">
+</resultMap> 
+<resultMap id="DangDangAddress" type="com.entity.DangDangAddress">
+</resultMap> 
+	  
+	 <select id="selOrder_All" resultMap="DangDangOrder">
+      select * from dangdang_order
+	 </select>
+	 
+	 <select id="selOrderDetail_All" resultMap="DangDangOrderDetail">
+	  select * from dangdang_OrderDetail
+	 </select>
+	 
+	 <select id="selAddress_All" resultMap="DangDangAddress">
+	  select * from dangdang_ADDRESS
+	 </select>
+<!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  --><!--  -->
+
+ <!-- 查询 -->
+    <select id="selAdd_ByAddressIdAndUserId" resultMap="DangDangAddress">
+    	select * from dangdang_address
+    		<where>
+				<if test="addressId != 0 and addressId !='' ">
+					and addressId = #{addressId}
+				</if>
+				<if test="ddUserId != 0 and ddUserId !='' ">
+					and ddUserId = #{ddUserId}
+				</if>
+			</where>	 
+	 </select>
+	 <!-- 生成地址条目 -->
+	<insert id="insAddress_All" >
+		<!-- 提前在数据库生成序列ID，然后把ID赋值给对象 -->
+			insert into dangdang_address(addressId,addressReceiveName,addressAdd,
+			addressMobile,addressZipcode,addressState,ddUserId,addressCreateDate)
+           		values
+           (seq_address.nextval,#{addressReceiveName},
+            #{addressAdd},#{addressMobile},
+            #{addressZipcode},#{addressState},#{ddUserId},null)
+	</insert>
+	 
+	 <!-- 生成订单 -->
+	<insert id="insOrder_All">
+		insert into dangdang_order(orderid,orderssid,ordertotalprice,orderstate,dduserid)
+            values(seq_order.nextval,#{uuid},#{orderTotalPrice},0,#{ddUserId})
+	</insert>
+	 
+	 
+  <insert id="insOrderDetail_All">
+          insert into dangdang_orderdetail(detailid,detailssid,detailcount,detailddprice,ddproductid,
+                 orderssid,addressid,dduserid,detailproductname)
+                 values
+                 (seq_orderdetail.nextval,
+                 sys_guid(),
+                 #{orderDetail.detailCount},
+                 #{orderDetail.detailDdprice},
+                 #{orderDetail.ddProductId},
+                 #{orderDetail.orderSsid},
+                 #{orderDetail.addressId},
+                 #{orderDetail.ddUserId},
+                 #{orderDetail.detailProductName})
+    </insert>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

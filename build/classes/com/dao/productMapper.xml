@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.productDao"><!-- namespace:映射文件的路径 -->
+
+<resultMap id="dangdang_product" type="com.entity.dangdang_product">
+</resultMap> 
+ 
+<resultMap id="dangdang_category1" type="com.entity.dangdang_category1">
+<id  property="dd_category1_id" column="dd_category1_id" />
+		<result property="dd_category1_name" column="dd_category1_name" />
+	<result property="dd_category1_create_date" column="dd_category1_create_date" />
+
+	<collection property="dangdang_category2" ofType="com.entity.dangdang_category2">
+		 <id  property="dd_category2_id" column="dd_category2_id" />
+		<result property="dd_category2_name" column="dd_category2_name" />
+		<result property="dd_category1_id" column="dd_category1_id" />
+		<result property="dd_category2_create_date" column="dd_category2_create_date" />
+	</collection> 
+
+</resultMap> 
+ 	
+ 	<select id="selPro_GroupByPress" resultType="String">
+ 	select dd_product_press from dangdang_product group by dd_product_press
+ 	</select>
+ 	
+	<select id="selCat1_All" resultMap="dangdang_category1">
+	select * from dangdang_category1 dc1, dangdang_category2 dc2 
+       where dc1.dd_category1_id = dc2.dd_category1_id
+	</select>
+	
+	<select id="selPro_ById" resultMap="dangdang_product">
+	select * from dangdang_product where dd_product_id = #{num}
+	</select>
+	
+	<select id="selPro_Recommend" resultMap="dangdang_product">
+	select * from
+	(  
+		select A.*, rownum RN  
+		from (select * from dangdang_product order by dd_product_name ) A  
+	)  
+	where RN between 1 and 2
+	</select>
+
+	<select id="selPro_Hot" resultMap="dangdang_product">
+	select * from
+	(  
+		select A.*, rownum RN  
+		from (select * from dangdang_product order by dd_product_count ) A  
+	)  
+	where RN between 1 and 4
+	</select>
+	
+	<select id="selPro_New" resultMap="dangdang_product">
+	select * from
+	(  
+		select A.*,rownum RN
+		from (select * from dangdang_product order by  dd_product_addtime desc) A  order by rn
+	)  
+	where RN between 1 and 4
+	</select>
+	
+	<select id="selPro_HotBoard" resultMap="dangdang_product">
+	select * from
+	(  
+		select A.*, rownum RN  
+		from (select * from dangdang_product order by dd_product_count desc) A  
+	)  
+	where RN between 1 and #{num}
+	</select>
+	
+	<select id="selPro_HotBoardMore" resultMap="dangdang_product">
+	select * from
+	(  
+		select A.*, rownum RN  
+		from (select * from dangdang_product order by dd_product_count) A  
+	)  
+	where RN between #{num1} and #{num2}
+	</select>
+	
+	<select id="selPro_Count" resultType="int">
+		select count(*) from dangdang_product
+	</select>
+	
+	
+	<select id="selProCat1_Show" resultMap="dangdang_product">
+		select dp.* from dangdang_product dp,dangdang_category2 dc2 
+		where 
+		dp.dd_category2_id=dc2.dd_category2_id and dd_category1_id =#{num}
+	</select>
+	
+	<select id="selProCat2_Show" resultMap="dangdang_product">
+		select * from dangdang_product dp,dangdang_category2 dc2 
+		where 
+		dp.dd_category2_id=dc2.dd_category2_id and dc2.dd_category2_id=#{num}
+	</select>
+	
+	<select id="selProCat1_Count" resultType="java.util.Map">
+select d_c2.dd_category1_id as "dd_Cat1_id",
+	count(*) as "dd_Cat1_Count" 
+		from 
+	dangdang_product d_p,dangdang_category2 d_c2 
+		where 
+	d_c2.dd_category2_id=d_p.dd_category2_id
+		group by 
+	d_c2.dd_category1_id
+
+	</select>
+	
+	<select id="selProCat2_Count" resultType="java.util.Map">
+	select d_c2.dd_category2_id as "dd_Cat2_id",
+	count(*) as "dd_Cat2_Count"
+		from 
+	dangdang_product d_p,dangdang_category2 d_c2 
+		where 
+	d_c2.dd_category2_id=d_p.dd_category2_id 
+		group by 
+	d_c2.dd_category2_id
+	</select>
+	
+	<select id="selPro_ByNameAndAuthorAndPress" resultMap="dangdang_product">
+	select * from DangDang_product 
+       where        
+      dd_product_name like CONCAT(CONCAT('%', #{dangdang_product.dd_product_name,jdbcType=VARCHAR}), '%') and
+      dd_product_author like CONCAT(CONCAT('%', #{dangdang_product.dd_product_author,jdbcType=VARCHAR}), '%') and 
+	  dd_product_press  like CONCAT(CONCAT('%', #{dangdang_product.dd_product_press,jdbcType=VARCHAR}), '%')
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

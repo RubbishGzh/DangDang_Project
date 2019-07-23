@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.clientDao"><!-- namespace:映射文件的路径 -->
+
+	 <resultMap id="dangdang_user" type="com.entity.dangdang_user">
+	 </resultMap>  
+
+	<select id="selUser_All" resultMap="dangdang_user">
+	select * from DANGDANG_USER
+	</select>
+
+	<select id="selUser_ById" resultMap="dangdang_user"  >
+	select * from DANGDANG_USER 
+	where
+	 	dd_user_email=#{dd_user_email,jdbcType=VARCHAR}  
+	 	and dd_user_password=#{dd_user_password,jdbcType=VARCHAR}  
+	</select>	
+	
+	<insert id="ins_DdUser">
+	insert into DANGDANG_USER (dd_user_id, dd_user_email, dd_user_password, dd_user_nickname, dd_user_state, dd_user_salt, dd_user_role)
+	values
+	(DANGDANG_USER_seq.Nextval,
+	#{dangdang_user.dd_user_email,jdbcType=VARCHAR},
+    #{dangdang_user.dd_user_password,jdbcType=VARCHAR},
+	#{dangdang_user.dd_user_nickname,jdbcType=VARCHAR},
+	#{dangdang_user.dd_user_state,jdbcType=INTEGER},
+	#{dangdang_user.dd_user_salt,jdbcType=VARCHAR},
+	#{dangdang_user.dd_user_role,jdbcType=VARCHAR})
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
